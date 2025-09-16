@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.19" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DanMu.Pan.Data\DanMu.Pan.Data.csproj" />
+    <ProjectReference Include="..\DanMu.Pan.Helper\DanMu.Pan.Helper.csproj" />
+    <ProjectReference Include="..\DanMu.Pan.Repository\DanMu.Pan.Repository.csproj" />
+  </ItemGroup>
+</Project>

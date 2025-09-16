@@ -1,0 +1,51 @@
+﻿using DanMu.Pan.Data.Dto.User;
+using DanMu.Pan.Helper;
+using MediatR;
+
+namespace DanMu.Pan.MediatR.Commands.User;
+
+/// <summary>
+/// 更新用户信息的命令类，实现IRequest接口，返回ServiceResponse<UserDto>类型的结果
+/// </summary>
+public class UpdateUserCommand : IRequest<ServiceResponse<UserDto>>
+{
+    /// <summary>
+    /// 用户唯一标识符
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// 用户名字
+    /// </summary>
+    public string FirstName { get; set; }
+
+    /// <summary>
+    /// 用户姓氏
+    /// </summary>
+    public string LastName { get; set; }
+
+    /// <summary>
+    /// 用户电话号码
+    /// </summary>
+    public string PhoneNumber { get; set; }
+
+    /// <summary>
+    /// 用户账户是否激活
+    /// </summary>
+    public bool IsActive { get; set; }
+
+    /// <summary>
+    /// 用户地址
+    /// </summary>
+    public string Address { get; set; }
+
+    /// <summary>
+    /// 用户是否为管理员
+    /// </summary>
+    public bool IsAdmin { get; set; }
+
+    /// <summary>
+    /// 用户声明信息
+    /// </summary>
+    public UserClaimDto UserClaims { get; set; }
+}
