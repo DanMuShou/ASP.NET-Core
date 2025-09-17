@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using DanMu.Pan.Data.Dto.User;
 using DanMu.Pan.Data.Info;
 using DanMu.Pan.Helper;
@@ -40,19 +39,18 @@ public class GetUserQueryHandler(
         CancellationToken cancellationToken
     )
     {
-        var entity = await userRepository
+        var user = await userRepository
             .FindByInclude(user => user.Id == request.Id)
             .FirstOrDefaultAsync(); // 根据用户ID查找用户实体
-        if (entity == null)
+        if (user == null)
         {
-            const string errorMessage = "User not fount";
-            logger.LogError(errorMessage);
-            return ServiceResponse<UserDto>.Return404(errorMessage);
+            logger.LogError(ErrorMessageStr.UserNotExist);
+            return ServiceResponse<UserDto>.Return404(ErrorMessageStr.UserNotExist);
         }
 
         // 获取用户声明并映射到UserDto
-        var claims = await userManager.GetClaimsAsync(entity);
-        var userDto = mapper.Map<UserDto>(entity);
+        var claims = await userManager.GetClaimsAsync(user);
+        var userDto = mapper.Map<UserDto>(user);
         userDto.UserClaim = claimsHelper.GetUserClaims(claims);
         return ServiceResponse<UserDto>.ReturnResultWith200(userDto);
     }

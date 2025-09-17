@@ -23,8 +23,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{AC83C850-6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DanMu.Pan.ServiceTest", "DanMu.Pan.ServiceTest\DanMu.Pan.ServiceTest.csproj", "{BBFAA788-DB8B-42F6-9E01-49FE9C4260AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DanMu.Pan.ControllerTest", "DanMu.Pan.ControllerTest\DanMu.Pan.ControllerTest.csproj", "{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,10 +57,6 @@ Global
 		{BBFAA788-DB8B-42F6-9E01-49FE9C4260AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBFAA788-DB8B-42F6-9E01-49FE9C4260AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBFAA788-DB8B-42F6-9E01-49FE9C4260AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,7 +69,6 @@ Global
 		{13EE13FB-E1DB-4422-B4B4-2E8F38CB0650} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7B507E50-EAE0-4452-9D88-4B064A9C8C25} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BBFAA788-DB8B-42F6-9E01-49FE9C4260AB} = {AC83C850-6982-47ED-AE90-B331A1BB0185}
-		{E2BC13ED-48CC-43BF-A9AE-DE11CA980F7D} = {AC83C850-6982-47ED-AE90-B331A1BB0185}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF13C535-12DB-4932-9937-823931CA9D80}

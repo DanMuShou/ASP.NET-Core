@@ -76,7 +76,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #region DocumentDeleted
         modelBuilder.Entity<DocumentDeleted>(entity =>
         {
-            entity.ToTable("T_DocumentDeleted");
+            entity.ToTable("R_DocumentDeleted");
             entity.HasKey(e => new { e.DocumentId, e.UserId }); //定义复合主键
             entity
                 .HasOne(e => e.CreatedByUser)
@@ -99,7 +99,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #region DocumentStarred
         modelBuilder.Entity<DocumentStarred>(entity =>
         {
-            entity.ToTable("T_DocumentStarred");
+            entity.ToTable("R_DocumentStarred");
             entity.HasKey(e => new { e.DocumentId, e.UserId });
             entity
                 .HasOne(e => e.Document)
@@ -119,7 +119,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #region DocumentUserPermission
         modelBuilder.Entity<DocumentUserPermission>(entity =>
         {
-            entity.ToTable("T_DocumentUserPermission");
+            entity.ToTable("R_DocumentUserPermission");
             entity.HasKey(e => new { e.DocumentId, e.UserId });
             entity.HasIndex(c => new { c.DocumentId, c.UserId });
             entity
@@ -212,7 +212,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #region PhysicalFolderUser
         modelBuilder.Entity<PhysicalFolderUser>(entity =>
         {
-            entity.ToTable("T_PhysicalFolderUser");
+            entity.ToTable("R_PhysicalFolderUser");
             entity.HasKey(e => new { e.FolderId, e.UserId });
             entity
                 .HasOne(e => e.PhysicalFolder)
@@ -232,7 +232,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #region SharedDocumentUsers
         modelBuilder.Entity<SharedDocumentUser>(entity =>
         {
-            entity.ToTable("T_SharedDocumentUser");
+            entity.ToTable("R_SharedDocumentUser");
             entity.HasKey(e => new { e.DocumentId, e.UserId });
             entity
                 .HasOne(e => e.Document)
@@ -250,6 +250,7 @@ public class DocumentContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
         #endregion
 
         #region User
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("T_User");

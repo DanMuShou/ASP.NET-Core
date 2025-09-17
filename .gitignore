@@ -372,3 +372,15 @@ paket-files/
 
 # Visual Studio 2022
 *.sln.iml
+
+# Ignore TestResults folder
+TestResults/
+
+# Ignore Test folder and all its contents
+Test/
+
+# Ignore test projects
+DanMu.Pan.ServiceTest/
+
+# Ignore deployment folders in TestResults
+TestResults/Deploy_*/

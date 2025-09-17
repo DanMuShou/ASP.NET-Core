@@ -51,7 +51,7 @@ public static class JwtConfigurationExtension
                         context.HttpContext.Items["Id"] = userId; // 将用户ID存储到HTTP上下文项中
                         var userInfoToken =
                             context.HttpContext.RequestServices.GetRequiredService<UserInfoToken>(); // 获取UserInfoToken服务实例并设置用户信息
-                        userInfoToken.Id = Guid.Parse(userId);
+                        userInfoToken.Id = Guid.Parse(userId); // 获取实例进行信息填充
                         userInfoToken.Email = email;
                         return Task.CompletedTask;
                     }, // 当令牌验证通过时触发

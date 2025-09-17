@@ -35,7 +35,7 @@ namespace DanMu.Pan.Domain.Migrations
                     LoginTime = table.Column<DateTime>(type: "timestamptz", nullable: false),
                     RemoteIP = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
-                    Provider = table.Column<string>(type: "text", nullable: false),
+                    Provider = table.Column<string>(type: "text", nullable: true),
                     Latitude = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Longitude = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
@@ -226,6 +226,28 @@ namespace DanMu.Pan.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "R_PhysicalFolderUser",
+                columns: table => new
+                {
+                    FolderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_R_PhysicalFolderUser", x => new { x.FolderId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_R_PhysicalFolderUser_T_PhysicalFolder_FolderId",
+                        column: x => x.FolderId,
+                        principalTable: "T_PhysicalFolder",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_R_PhysicalFolderUser_T_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "T_User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "T_Document",
                 columns: table => new
                 {
@@ -271,29 +293,7 @@ namespace DanMu.Pan.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "T_PhysicalFolderUser",
-                columns: table => new
-                {
-                    FolderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_T_PhysicalFolderUser", x => new { x.FolderId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_T_PhysicalFolderUser_T_PhysicalFolder_FolderId",
-                        column: x => x.FolderId,
-                        principalTable: "T_PhysicalFolder",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_T_PhysicalFolderUser_T_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "T_User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "T_DocumentDeleted",
+                name: "R_DocumentDeleted",
                 columns: table => new
                 {
                     DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -308,30 +308,30 @@ namespace DanMu.Pan.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_DocumentDeleted", x => new { x.DocumentId, x.UserId });
+                    table.PrimaryKey("PK_R_DocumentDeleted", x => new { x.DocumentId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_T_DocumentDeleted_T_Document_DocumentId",
+                        name: "FK_R_DocumentDeleted_T_Document_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "T_Document",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_T_DocumentDeleted_T_User_CreatedBy",
+                        name: "FK_R_DocumentDeleted_T_User_CreatedBy",
                         column: x => x.CreatedBy,
                         principalTable: "T_User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_T_DocumentDeleted_T_User_DeletedBy",
+                        name: "FK_R_DocumentDeleted_T_User_DeletedBy",
                         column: x => x.DeletedBy,
                         principalTable: "T_User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_T_DocumentDeleted_T_User_ModifiedBy",
+                        name: "FK_R_DocumentDeleted_T_User_ModifiedBy",
                         column: x => x.ModifiedBy,
                         principalTable: "T_User",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_T_DocumentDeleted_T_User_UserId",
+                        name: "FK_R_DocumentDeleted_T_User_UserId",
                         column: x => x.UserId,
                         principalTable: "T_User",
                         principalColumn: "Id",
@@ -339,7 +339,7 @@ namespace DanMu.Pan.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "T_DocumentStarred",
+                name: "R_DocumentStarred",
                 columns: table => new
                 {
                     DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -347,21 +347,21 @@ namespace DanMu.Pan.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_DocumentStarred", x => new { x.DocumentId, x.UserId });
+                    table.PrimaryKey("PK_R_DocumentStarred", x => new { x.DocumentId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_T_DocumentStarred_T_Document_DocumentId",
+                        name: "FK_R_DocumentStarred_T_Document_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "T_Document",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_T_DocumentStarred_T_User_UserId",
+                        name: "FK_R_DocumentStarred_T_User_UserId",
                         column: x => x.UserId,
                         principalTable: "T_User",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "T_DocumentUserPermission",
+                name: "R_DocumentUserPermission",
                 columns: table => new
                 {
                     DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -376,14 +376,36 @@ namespace DanMu.Pan.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_T_DocumentUserPermission", x => new { x.DocumentId, x.UserId });
+                    table.PrimaryKey("PK_R_DocumentUserPermission", x => new { x.DocumentId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_T_DocumentUserPermission_T_Document_DocumentId",
+                        name: "FK_R_DocumentUserPermission_T_Document_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "T_Document",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_T_DocumentUserPermission_T_User_UserId",
+                        name: "FK_R_DocumentUserPermission_T_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "T_User",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "R_SharedDocumentUser",
+                columns: table => new
+                {
+                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_R_SharedDocumentUser", x => new { x.DocumentId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_R_SharedDocumentUser_T_Document_DocumentId",
+                        column: x => x.DocumentId,
+                        principalTable: "T_Document",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_R_SharedDocumentUser_T_User_UserId",
                         column: x => x.UserId,
                         principalTable: "T_User",
                         principalColumn: "Id");
@@ -431,28 +453,6 @@ namespace DanMu.Pan.Domain.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "T_SharedDocumentUser",
-                columns: table => new
-                {
-                    DocumentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_T_SharedDocumentUser", x => new { x.DocumentId, x.UserId });
-                    table.ForeignKey(
-                        name: "FK_T_SharedDocumentUser_T_Document_DocumentId",
-                        column: x => x.DocumentId,
-                        principalTable: "T_Document",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_T_SharedDocumentUser_T_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "T_User",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -480,6 +480,51 @@ namespace DanMu.Pan.Domain.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentDeleted_CreatedBy",
+                table: "R_DocumentDeleted",
+                column: "CreatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentDeleted_DeletedBy",
+                table: "R_DocumentDeleted",
+                column: "DeletedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentDeleted_ModifiedBy",
+                table: "R_DocumentDeleted",
+                column: "ModifiedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentDeleted_UserId",
+                table: "R_DocumentDeleted",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentStarred_UserId",
+                table: "R_DocumentStarred",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentUserPermission_DocumentId_UserId",
+                table: "R_DocumentUserPermission",
+                columns: new[] { "DocumentId", "UserId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_DocumentUserPermission_UserId",
+                table: "R_DocumentUserPermission",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_PhysicalFolderUser_UserId",
+                table: "R_PhysicalFolderUser",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_R_SharedDocumentUser_UserId",
+                table: "R_SharedDocumentUser",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_T_Document_CreatedBy",
                 table: "T_Document",
                 column: "CreatedBy");
@@ -503,41 +548,6 @@ namespace DanMu.Pan.Domain.Migrations
                 name: "IX_T_Document_PhysicalFolderId",
                 table: "T_Document",
                 column: "PhysicalFolderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentDeleted_CreatedBy",
-                table: "T_DocumentDeleted",
-                column: "CreatedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentDeleted_DeletedBy",
-                table: "T_DocumentDeleted",
-                column: "DeletedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentDeleted_ModifiedBy",
-                table: "T_DocumentDeleted",
-                column: "ModifiedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentDeleted_UserId",
-                table: "T_DocumentDeleted",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentStarred_UserId",
-                table: "T_DocumentStarred",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentUserPermission_DocumentId_UserId",
-                table: "T_DocumentUserPermission",
-                columns: new[] { "DocumentId", "UserId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_DocumentUserPermission_UserId",
-                table: "T_DocumentUserPermission",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_T_DocumentVersion_CreatedBy",
@@ -575,16 +585,6 @@ namespace DanMu.Pan.Domain.Migrations
                 column: "PhysicalFolderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_T_PhysicalFolderUser_UserId",
-                table: "T_PhysicalFolderUser",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_T_SharedDocumentUser_UserId",
-                table: "T_SharedDocumentUser",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "T_User",
                 column: "NormalizedEmail");
@@ -615,25 +615,25 @@ namespace DanMu.Pan.Domain.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "T_DocumentDeleted");
+                name: "R_DocumentDeleted");
 
             migrationBuilder.DropTable(
-                name: "T_DocumentStarred");
+                name: "R_DocumentStarred");
 
             migrationBuilder.DropTable(
-                name: "T_DocumentUserPermission");
+                name: "R_DocumentUserPermission");
+
+            migrationBuilder.DropTable(
+                name: "R_PhysicalFolderUser");
+
+            migrationBuilder.DropTable(
+                name: "R_SharedDocumentUser");
 
             migrationBuilder.DropTable(
                 name: "T_DocumentVersion");
 
             migrationBuilder.DropTable(
                 name: "T_LoginAudit");
-
-            migrationBuilder.DropTable(
-                name: "T_PhysicalFolderUser");
-
-            migrationBuilder.DropTable(
-                name: "T_SharedDocumentUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

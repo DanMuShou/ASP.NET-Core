@@ -2,6 +2,8 @@
 using DanMu.Pan.Helper;
 using MediatR;
 
+// OK
+
 namespace DanMu.Pan.MediatR.Commands.User;
 
 /// <summary>

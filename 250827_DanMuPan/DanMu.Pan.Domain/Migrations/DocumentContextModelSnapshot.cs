@@ -129,7 +129,7 @@ namespace DanMu.Pan.Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("T_DocumentDeleted", (string)null);
+                    b.ToTable("R_DocumentDeleted", (string)null);
                 });
 
             modelBuilder.Entity("DanMu.Pan.Data.Entities.DocumentStarred", b =>
@@ -144,7 +144,7 @@ namespace DanMu.Pan.Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("T_DocumentStarred", (string)null);
+                    b.ToTable("R_DocumentStarred", (string)null);
                 });
 
             modelBuilder.Entity("DanMu.Pan.Data.Entities.DocumentUserPermission", b =>
@@ -182,7 +182,7 @@ namespace DanMu.Pan.Domain.Migrations
 
                     b.HasIndex("DocumentId", "UserId");
 
-                    b.ToTable("T_DocumentUserPermission", (string)null);
+                    b.ToTable("R_DocumentUserPermission", (string)null);
                 });
 
             modelBuilder.Entity("DanMu.Pan.Data.Entities.DocumentVersion", b =>
@@ -352,7 +352,7 @@ namespace DanMu.Pan.Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("T_PhysicalFolderUser", (string)null);
+                    b.ToTable("R_PhysicalFolderUser", (string)null);
                 });
 
             modelBuilder.Entity("DanMu.Pan.Data.Entities.SharedDocumentUser", b =>
@@ -367,7 +367,7 @@ namespace DanMu.Pan.Domain.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("T_SharedDocumentUser", (string)null);
+                    b.ToTable("R_SharedDocumentUser", (string)null);
                 });
 
             modelBuilder.Entity("DanMu.Pan.Data.Entities.User", b =>

@@ -15,10 +15,11 @@ namespace DanMuPan.API.Controllers.User;
 [Controller]
 [Route("api/[controller]")]
 [ApiController]
-// [Authorize]
+[Authorize]
 public class UserController(
     IMediator mediator,
     IWebHostEnvironment webHostEnvironment,
+    ILogger<UserController> logger,
     PathHelper pathHelper,
     UserInfoToken UserInfo
 ) : BaseController
@@ -131,6 +132,7 @@ public class UserController(
         return Ok(result.Data);
     }
 
+    // TODO : 不安全的登录方式，需要修改
     /// <summary>
     /// 处理用户登录请求
     /// </summary>
@@ -151,12 +153,68 @@ public class UserController(
         return Ok(result.Data);
     }
 
+    /// <summary>
+    /// 更新指定ID的用户信息
+    /// </summary>
+    /// <param name="id">要更新的用户的唯一标识符</param>
+    /// <param name="updateUserCommand">包含用户更新信息的命令对象</param>
+    /// <returns>返回更新后的用户信息或错误响应</returns>
     [HttpPut("{id:guid}")]
     [Produces("application/json", "application/xml", Type = typeof(UserDto))]
     public async Task<IActionResult> UpdateUser(Guid id, UpdateUserCommand updateUserCommand)
     {
         updateUserCommand.Id = id;
         var result = await mediator.Send(updateUserCommand);
+        return ReturnFormattedResponse(result);
+    }
+
+    /// <summary>
+    /// 更新当前用户的基本信息
+    /// </summary>
+    /// <param name="updateUserProfileCommand">包含用户基本信息的更新命令对象，包括姓名、电话号码和地址</param>
+    /// <returns>返回更新后的用户信息或错误响应</returns>
+    [HttpPut(nameof(UpdateUserProfile))]
+    [Produces("application/json", "application/xml", Type = typeof(UserDto))]
+    public async Task<IActionResult> UpdateUserProfile(
+        UpdateUserProfileCommand updateUserProfileCommand
+    )
+    {
+        var result = await mediator.Send(updateUserProfileCommand);
+        return ReturnFormattedResponse(result);
+    }
+
+    // TODO 添加用户上传头像接口
+    [HttpPost(nameof(UpdateUserProfilePhoto)), DisableRequestSizeLimit]
+    [Produces("application/json", "application/xml", Type = typeof(UserDto))]
+    public async Task<IActionResult> UpdateUserProfilePhoto()
+    {
+        var updateUserProfilePhotoCommand = new UpdateUserProfilePhotoCommand()
+        {
+            FormFile = Request.Form.Files[0],
+            RootPath = webHostEnvironment.WebRootPath,
+        };
+
+        var result = await mediator.Send(updateUserProfilePhotoCommand);
+        return ReturnFormattedResponse(result);
+    }
+
+    /// <summary>
+    /// 删除指定ID的用户
+    /// </summary>
+    /// <param name="id">要删除的用户的唯一标识符</param>
+    /// <returns>返回删除操作的结果响应</returns>
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteUser(Guid id)
+    {
+        var deleteUserCommand = new DeleteUserCommand { Id = id };
+        var result = await mediator.Send(deleteUserCommand);
+        return ReturnFormattedResponse(result);
+    }
+
+    [HttpPost(nameof(ChangePassword))]
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand resetPasswordCommand)
+    {
+        var result = await mediator.Send(resetPasswordCommand);
         return ReturnFormattedResponse(result);
     }
 }

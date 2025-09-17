@@ -6,6 +6,7 @@ using DanMu.Pan.Helper;
 using DanMu.Pan.MediatR;
 using DanMuPan.API.Helpers;
 using DanMuPan.API.Helpers.Mapping;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -95,12 +96,44 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment env)
                     },
                 }
             );
+
+            options.AddSecurityDefinition(
+                JwtBearerDefaults.AuthenticationScheme,
+                new OpenApiSecurityScheme()
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                    Name = "Authorization", // 指定安全方案的名称，这里是"Authorization"
+                    In = ParameterLocation.Header, // 指定安全令牌在HTTP请求中的位置
+                    Type = SecuritySchemeType.ApiKey, // 指定安全方案的类型，这里使用SecuritySchemeType.ApiKey表示这是一个API密钥类型的认证
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                }
+            );
+
+            options.AddSecurityRequirement(
+                new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme()
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = JwtBearerDefaults.AuthenticationScheme,
+                            },
+                        },
+                        []
+                    },
+                }
+            );
         }); // 确保添加了 API Explorer 服务，这是 Swagger 所需的
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)
     {
-        if (env.IsDevelopment())
+        app.UseRouting();
+
+        if (webHostEnvironment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
 
@@ -112,25 +145,8 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment env)
             }); // 配置 Swagger UI，提供交互式 API 测试界面
         }
 
-        app.UseRouting();
-
-        app.Use(
-            async (context, next) =>
-            {
-                if (context.Request.Path == "/")
-                {
-                    context.Response.Redirect("/Swagger");
-                    return;
-                }
-                await next();
-            }
-        );
-
-        if (!env.IsDevelopment())
-        {
-            app.UseAuthentication(); // 添加认证中间件
-            app.UseAuthorization();
-        }
+        app.UseAuthentication(); // 添加认证中间件
+        app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

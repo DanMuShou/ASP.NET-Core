@@ -5,6 +5,8 @@ using DanMu.Pan.Repository.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
+// OK
+
 namespace DanMu.Pan.MediatR.Handlers.User;
 
 /// <summary>

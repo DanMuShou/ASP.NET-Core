@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using DanMu.Pan.Data.Dto;
 using DanMu.Pan.Data.Dto.User;
-using DanMu.Pan.Data.Info;
 using DanMu.Pan.Data.Resources;
 using DanMu.Pan.Domain.Context;
 using DanMu.Pan.Helper;
@@ -87,22 +86,22 @@ public class UserRepository(
         );
     }
 
-    public UserAuthDto BuildUserAuthObject(Data.Entities.User appUser, IList<Claim> claims)
+    public UserAuthDto BuildUserAuthObject(Data.Entities.User user, IList<Claim> claims)
     {
         var userAuthDto = new UserAuthDto
         {
-            Id = appUser.Id,
-            UserName = appUser.UserName,
-            FirstName = appUser.FirstName,
-            LastName = appUser.LastName,
-            Email = appUser.Email,
-            PhoneNumber = appUser.PhoneNumber,
+            Id = user.Id,
+            UserName = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
             IsAuthenticated = true,
-            ProfilePhoto = appUser.ProfilePhoto,
-            IsAdmin = appUser.IsAdmin,
+            ProfilePhoto = user.ProfilePhoto,
+            IsAdmin = user.IsAdmin,
             Claims = claimsHelper.GetValidClaims(claims, claimsHelper.UserClaimTypes),
         };
-        userAuthDto.BearerToken = BuildJwtToken(userAuthDto, appUser.Id, claims);
+        userAuthDto.BearerToken = BuildJwtToken(userAuthDto, user.Id, claims);
         return userAuthDto;
     }
 

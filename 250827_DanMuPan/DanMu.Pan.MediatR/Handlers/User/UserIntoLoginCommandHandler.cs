@@ -1,6 +1,7 @@
 ﻿using DanMu.Pan.Data.Dto.LoginAuditDto;
 using DanMu.Pan.Data.Dto.User;
 using DanMu.Pan.Data.Enum;
+using DanMu.Pan.Data.Info;
 using DanMu.Pan.Helper;
 using DanMu.Pan.MediatR.Commands.User;
 using DanMu.Pan.Repository.Hub;
@@ -9,7 +10,8 @@ using DanMu.Pan.Repository.User;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
+
+// OK
 
 namespace DanMu.Pan.MediatR.Handlers.User;
 
@@ -26,9 +28,9 @@ namespace DanMu.Pan.MediatR.Handlers.User;
 /// <param name="hubContext">SignalR集线器上下文，用于实时通信</param>
 public class UserIntoLoginCommandHandler(
     IUserRepository userRepository,
-    UserManager<Data.Entities.User> userManager,
     ILoginAuditRepository loginAuditRepository,
-    IHubContext<UserHub, IHubClient> hubContext
+    IHubContext<UserHub, IHubClient> hubContext,
+    UserManager<Data.Entities.User> userManager
 ) : IRequestHandler<UserIntoLoginCommand, ServiceResponse<UserAuthDto>>
 {
     /// <summary>
@@ -51,26 +53,12 @@ public class UserIntoLoginCommandHandler(
             Longitude = "",
         };
 
-        var user = await userRepository
-            .All.Where(u => u.UserName == request.Email)
-            .FirstOrDefaultAsync();
+        var user = await userManager.FindByEmailAsync(request.Email);
 
-        if (user == null)
+        if (user is not { IsActive: true, IsDeleted: false })
         {
             await loginAuditRepository.LoginAudit(loginAuditDto);
-            return ServiceResponse<UserAuthDto>.ReturnFailed(
-                401,
-                "UserName Or Password is InCorrect."
-            );
-        }
-
-        if (!user.IsActive)
-        {
-            await loginAuditRepository.LoginAudit(loginAuditDto);
-            return ServiceResponse<UserAuthDto>.ReturnFailed(
-                401,
-                "UserName Or Password is InCorrect."
-            );
+            return ServiceResponse<UserAuthDto>.ReturnFailed(401, ErrorMessageStr.LoginInvalid);
         }
 
         loginAuditDto.Status = nameof(LoginStatus.Success);

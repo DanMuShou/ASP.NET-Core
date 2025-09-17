@@ -22,10 +22,10 @@ public interface IUserRepository : IGenericRepository<Data.Entities.User>
     /// <summary>
     /// 构建用户认证对象
     /// </summary>
-    /// <param name="appUser">应用程序用户实体</param>
+    /// <param name="user">应用程序用户实体</param>
     /// <param name="claims">用户声明列表</param>
     /// <returns>用户认证数据传输对象</returns>
-    UserAuthDto BuildUserAuthObject(DanMu.Pan.Data.Entities.User appUser, IList<Claim> claims);
+    UserAuthDto BuildUserAuthObject(DanMu.Pan.Data.Entities.User user, IList<Claim> claims);
 
     /// <summary>
     /// 获取共享用户列表
