@@ -1,0 +1,101 @@
+﻿@page "/servers/{serverId:int}"
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"
+                ConfirmExternalNavigation="true"></NavigationLock>
+
+<h3>Edit Server</h3>
+<br/>
+<br/>
+
+@if (Server is not null)
+{
+    <EditForm Model="Server" FormName="formServer" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+
+        <InputNumber @bind-Value="Server.ServerId" hidden=""></InputNumber>
+
+        <ValidationSummary></ValidationSummary>
+
+        <FieldComponent Label="名称">
+            <Control>
+                <InputText @bind-Value="Server.Name" class="form-control"></InputText>
+            </Control>
+            <ValidationControl>
+                <ValidationMessage For="() => Server.Name"></ValidationMessage>
+            </ValidationControl>
+        </FieldComponent>
+
+        <FieldComponent Label="城市">
+            <Control>
+                <InputText @bind-Value="Server.City" class="form-control"></InputText>
+            </Control>
+            <ValidationControl>
+                <ValidationMessage For="() => Server.City"></ValidationMessage>
+            </ValidationControl>
+        </FieldComponent>
+
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">服务器状态</label>
+            </div>
+            <div class="col-6 input-width">
+                <InputCheckbox @bind-Value="@Server.IsOnline" class="form-check-input"></InputCheckbox>
+            </div>
+        </div>
+
+
+        <br>
+        <button class="btn btn-primary" type="submit">更新</button>
+        &nbsp;
+        <a href="/servers" class="btn btn-primary">关闭</a>
+
+
+    </EditForm>
+}
+<br>
+
+@code {
+    @* 用于从 Blazor 的依赖注入（DI）容器中获取 NavigationManager 服务。 *@
+    [Inject] public required IServersRepository ServersRepository { get; set; }
+    
+    [Inject] public required NavigationManager NavigationManager { get; set; }
+    [Inject] public required IJSRuntime JsRuntime { get; set; }
+
+
+    //表示该属性是组件间通信的参数，允许父组件向当前Blazor组件传递数据。
+    //从路由中捕获动态片段（{serverId}），使组件能够根据不同的 ServerId 值处理对应的服务器编辑逻辑（如加载特定服务器的数据）。
+    [Parameter] public int ServerId { get; set; }
+
+    //告知 Blazor 在表单提交时，自动将表单字段的值绑定到 Server 对象的属性上
+    //与 EditForm 组件的 Model="Server" 配合使用，实现表单双向数据绑定
+    //FormName 属性指定了表单的 name 属性，用于标识表单
+    [SupplyParameterFromForm(FormName = "formServer")]
+    private Server? Server { get; set; }
+
+
+    //参数改变会覆盖原先参数 使用??=初始化
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        Server ??= await ServersRepository.GetServerByServerId(ServerId);
+    }
+
+    private async Task Submit()
+    {
+        if (Server != null)
+            await ServersRepository.UpdateServer(Server);
+
+        NavigationManager.NavigateTo($"/servers/back_from/{Server?.City}");
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var result = await JsRuntime.InvokeAsync<bool>("confirm", "你想要离开这个页面吗");
+        if (!result)
+        {
+            context.PreventNavigation();
+        }
+    }
+
+}

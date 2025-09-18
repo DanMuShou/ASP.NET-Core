@@ -1,0 +1,74 @@
+﻿@page "/servers"
+@page "/servers/back_from/{cityName}"
+
+@rendermode InteractiveServer
+
+<h3>Servers</h3>
+<br>
+<br>
+
+<CityListComponent SelectCityCallback="HandelCitySelection"
+                   SelectedCity="@_selectCity"
+                   @ref="_cityListComponent"></CityListComponent>
+<br>
+
+<SearchBarComponent SearchServerCallback="HandelSearchServer"
+                    @ref="_searchBarComponent"></SearchBarComponent>
+<br>
+
+@* 允许父组件将值自动“广播”给所有子组件，简化跨层级通信。 *@
+<CascadingValue Name="SelectedCity" Value="@_selectCity">
+    <ServerListComponent CityName="@_selectCity"
+                         SearchFilter="@_serverFilter"></ServerListComponent>
+</CascadingValue>
+
+<p>
+    <a href="/serverName" class="btn btn-primary">添加服务器</a>
+</p>
+
+@code {
+    [Inject] public required TorontoOnlineServersStore TorontoOnlineServersStore { get; set; }
+    [Inject] public required IServersRepository ServersRepository { get; set; }
+
+    [Inject] public required NavigationManager NavigationManager { get; set; }
+
+    [Parameter] public string? CityName { get; set; }
+
+    private string _selectCity = "Toronto";
+    private string _serverFilter = string.Empty;
+
+    private CityListComponent? _cityListComponent;
+    private SearchBarComponent? _searchBarComponent;
+
+    private void HandelCitySelection(string cityName)
+    {
+        _selectCity = cityName;
+        _serverFilter = string.Empty;
+        _searchBarComponent?.ClearFilter();
+    }
+
+    private void HandelSearchServer(string serverFilter)
+    {
+        _serverFilter = serverFilter;
+        _selectCity = string.Empty;
+        _cityListComponent?.ClearSelection();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (NavigationManager.Uri.Contains("back_from") && !string.IsNullOrWhiteSpace(CityName))
+            {
+                _selectCity = CityName;
+                StateHasChanged();
+            }
+
+            var serversToronto = await ServersRepository.GetServersByCityName("Toronto");
+            TorontoOnlineServersStore.SetNumbersServerOnline((serversToronto.Count(s => s.IsOnline)));
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}
